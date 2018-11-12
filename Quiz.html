@@ -1,0 +1,82 @@
+<html>
+<body>
+  
+  <div id="app">
+    <h1>{{ quiz.title }}</h1>
+    <div v-for="(question, index) in quiz.questions">
+      <div v-show="index === questionIndex">
+        <h2>{{ question.text }}</h2>
+        <ol>
+          <li v-for="response in question.responses">
+            <label>
+              <input type="radio" 
+                     v-bind:value="response.correct" 
+                     v-bind:name="index" 
+                     v-model="userResponses[index]"> {{response.text}}
+            </label>
+          </li>
+        </ol>
+        <button v-if="questionIndex > 0" v-on:click="prev">
+          prev
+        </button>
+        <button v-on:click="next">
+          next
+        </button>
+      </div>
+    </div>
+    <div v-show="questionIndex === quiz.questions.length">
+      <h2>
+      Quiz finished
+    </h2>
+      <p>
+        Total score: {{ score() }} / {{ quiz.questions.length }}
+      </p>
+    </div>
+  </div>
+  
+  <script src="https://vuejs.org/js/vue.js"></script>
+  <script>
+    window.onload=function(){
+      var quiz = {
+        title: 'TRY QUIZ',
+        questions: [
+          {
+            text: "Are you Okay ?",
+            responses: [
+              {text: 'No'}, 
+              {text: 'Maybe'},
+              {text: 'Yes', correct: true}, 
+            ]
+          }, {
+            text: "Are You Sure ?",
+            responses: [
+              {text: 'YES', correct: true}, 
+              {text: 'I TOLD YES'}, 
+              {text: 'ARE YOU BLIND ?'},
+            ]
+          } 
+        ]
+      };
+            
+      new Vue({
+        el: '#app',
+        data: {
+          quiz: quiz,
+          questionIndex: 0,
+          userResponses: Array(quiz.questions.length).fill(false)
+        },
+        methods: {
+          next: function() {
+            this.questionIndex++;
+          },
+          prev: function() {
+            this.questionIndex--;
+          },
+          score: function() {
+            return this.userResponses.filter(function(val) { return val }).length;
+          }
+        }
+      });
+    }
+  </script>
+</body>
